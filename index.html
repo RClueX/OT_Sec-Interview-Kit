@@ -1,0 +1,1042 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Security Engineer Interview</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --surface: #111118;
+    --border: #1e1e2e;
+    --accent: #00ff88;
+    --accent2: #ff4444;
+    --accent3: #ffaa00;
+    --text: #e8e8f0;
+    --muted: #666680;
+    --card: #13131f;
+  }
+
+- { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+font-family: ‘Syne’, sans-serif;
+background: var(–bg);
+color: var(–text);
+min-height: 100vh;
+padding: 24px 16px 60px;
+}
+
+header {
+text-align: center;
+margin-bottom: 40px;
+padding-top: 16px;
+}
+
+.tag {
+display: inline-block;
+font-family: ‘Space Mono’, monospace;
+font-size: 10px;
+letter-spacing: 3px;
+color: var(–accent);
+border: 1px solid var(–accent);
+padding: 4px 12px;
+text-transform: uppercase;
+margin-bottom: 16px;
+animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+0%, 100% { box-shadow: 0 0 0 0 rgba(0,255,136,0.3); }
+50% { box-shadow: 0 0 0 6px rgba(0,255,136,0); }
+}
+
+h1 {
+font-size: clamp(26px, 6vw, 44px);
+font-weight: 800;
+line-height: 1.1;
+letter-spacing: -1px;
+}
+
+h1 span { color: var(–accent); }
+
+.subtitle {
+font-family: ‘Space Mono’, monospace;
+font-size: 11px;
+color: var(–muted);
+margin-top: 10px;
+letter-spacing: 1px;
+}
+
+/* Controls */
+.controls {
+display: flex;
+gap: 8px;
+flex-wrap: wrap;
+justify-content: center;
+margin-bottom: 32px;
+}
+
+.filter-btn {
+font-family: ‘Space Mono’, monospace;
+font-size: 11px;
+padding: 8px 16px;
+background: transparent;
+border: 1px solid var(–border);
+color: var(–muted);
+cursor: pointer;
+letter-spacing: 1px;
+transition: all 0.2s;
+text-transform: uppercase;
+}
+
+.filter-btn:hover, .filter-btn.active {
+border-color: var(–accent);
+color: var(–accent);
+background: rgba(0,255,136,0.05);
+}
+
+.filter-btn[data-cat=“Tools”].active { border-color: var(–accent3); color: var(–accent3); background: rgba(255,170,0,0.05); }
+.filter-btn[data-cat=“Vulnerability”].active { border-color: #ff6b6b; color: #ff6b6b; background: rgba(255,107,107,0.05); }
+.filter-btn[data-cat=“Automation”].active { border-color: #6bcfff; color: #6bcfff; background: rgba(107,207,255,0.05); }
+.filter-btn[data-cat=“Network”].active { border-color: #d18aff; color: #d18aff; background: rgba(209,138,255,0.05); }
+.filter-btn[data-cat=“Behavioral”].active { border-color: #ff8a65; color: #ff8a65; background: rgba(255,138,101,0.05); }
+.filter-btn[data-cat=“OT-Security”].active { border-color: #00e5ff; color: #00e5ff; background: rgba(0,229,255,0.05); }
+
+/* Question cards */
+.questions-grid {
+display: grid;
+gap: 12px;
+max-width: 800px;
+margin: 0 auto;
+}
+
+.q-card {
+background: var(–card);
+border: 1px solid var(–border);
+border-left: 3px solid var(–accent);
+padding: 20px;
+cursor: pointer;
+transition: all 0.25s;
+animation: fadeIn 0.3s ease forwards;
+}
+
+@keyframes fadeIn {
+from { opacity: 0; transform: translateY(8px); }
+to { opacity: 1; transform: translateY(0); }
+}
+
+.q-card[data-cat=“Tools”] { border-left-color: var(–accent3); }
+.q-card[data-cat=“Vulnerability”] { border-left-color: #ff6b6b; }
+.q-card[data-cat=“Automation”] { border-left-color: #6bcfff; }
+.q-card[data-cat=“Network”] { border-left-color: #d18aff; }
+.q-card[data-cat=“Behavioral”] { border-left-color: #ff8a65; }
+.q-card[data-cat=“OT-Security”] { border-left-color: #00e5ff; }
+
+.q-card:hover {
+border-color: var(–muted);
+background: #16161f;
+transform: translateX(4px);
+}
+
+.q-card.open { background: #16161f; }
+
+.q-header {
+display: flex;
+align-items: flex-start;
+gap: 12px;
+}
+
+.q-num {
+font-family: ‘Space Mono’, monospace;
+font-size: 11px;
+color: var(–muted);
+min-width: 28px;
+padding-top: 2px;
+}
+
+.q-meta {
+flex: 1;
+}
+
+.q-badges {
+display: flex;
+gap: 6px;
+margin-bottom: 8px;
+flex-wrap: wrap;
+}
+
+.badge {
+font-family: ‘Space Mono’, monospace;
+font-size: 9px;
+letter-spacing: 1px;
+padding: 2px 8px;
+text-transform: uppercase;
+}
+
+.badge-cat {
+background: rgba(0,255,136,0.1);
+color: var(–accent);
+border: 1px solid rgba(0,255,136,0.2);
+}
+
+.badge-cat.Tools { background: rgba(255,170,0,0.1); color: var(–accent3); border-color: rgba(255,170,0,0.2); }
+.badge-cat.Vulnerability { background: rgba(255,107,107,0.1); color: #ff6b6b; border-color: rgba(255,107,107,0.2); }
+.badge-cat.Automation { background: rgba(107,207,255,0.1); color: #6bcfff; border-color: rgba(107,207,255,0.2); }
+.badge-cat.Network { background: rgba(209,138,255,0.1); color: #d18aff; border-color: rgba(209,138,255,0.2); }
+.badge-cat.Behavioral { background: rgba(255,138,101,0.1); color: #ff8a65; border-color: rgba(255,138,101,0.2); }
+.badge-cat.OT-Security { background: rgba(0,229,255,0.1); color: #00e5ff; border-color: rgba(0,229,255,0.2); }
+
+.badge-level {
+background: transparent;
+border: 1px solid var(–border);
+color: var(–muted);
+}
+
+.q-text {
+font-size: 15px;
+font-weight: 700;
+line-height: 1.4;
+color: var(–text);
+}
+
+.q-toggle {
+font-family: ‘Space Mono’, monospace;
+font-size: 18px;
+color: var(–muted);
+min-width: 20px;
+line-height: 1;
+padding-top: 2px;
+transition: transform 0.2s;
+}
+
+.q-card.open .q-toggle { transform: rotate(45deg); color: var(–accent); }
+
+.q-answer {
+display: none;
+margin-top: 16px;
+padding-top: 16px;
+border-top: 1px solid var(–border);
+margin-left: 40px;
+}
+
+.q-card.open .q-answer { display: block; }
+
+.answer-label {
+font-family: ‘Space Mono’, monospace;
+font-size: 9px;
+letter-spacing: 2px;
+color: var(–accent);
+text-transform: uppercase;
+margin-bottom: 8px;
+}
+
+.answer-text {
+font-size: 13px;
+line-height: 1.7;
+color: #b0b0c8;
+}
+
+.answer-text ul {
+padding-left: 16px;
+margin-top: 6px;
+}
+
+.answer-text li {
+margin-bottom: 4px;
+}
+
+.jd-ref {
+display: inline-flex;
+align-items: center;
+gap: 4px;
+font-family: ‘Space Mono’, monospace;
+font-size: 9px;
+color: var(–muted);
+border: 1px solid var(–border);
+padding: 2px 8px;
+margin-top: 12px;
+}
+
+.jd-ref::before {
+content: ‘📋’;
+font-size: 10px;
+}
+
+/* Stats bar */
+.stats {
+display: flex;
+justify-content: center;
+gap: 24px;
+margin-bottom: 28px;
+flex-wrap: wrap;
+}
+
+.stat {
+text-align: center;
+}
+
+.stat-n {
+font-family: ‘Space Mono’, monospace;
+font-size: 22px;
+font-weight: 700;
+color: var(–accent);
+}
+
+.stat-l {
+font-size: 11px;
+color: var(–muted);
+letter-spacing: 1px;
+text-transform: uppercase;
+}
+
+.hidden { display: none !important; }
+
+.no-results {
+text-align: center;
+font-family: ‘Space Mono’, monospace;
+color: var(–muted);
+padding: 40px;
+font-size: 12px;
+display: none;
+}
+</style>
+
+</head>
+<body>
+
+<header>
+  <div class="tag">Interview Prep</div>
+  <h1>Security <span>Engineer</span><br>Interview Kit</h1>
+  <p class="subtitle">IT + OT Security — ECS Product Security Testing Role</p>
+</header>
+
+<div class="stats">
+  <div class="stat"><div class="stat-n" id="total-count">45</div><div class="stat-l">Questions</div></div>
+  <div class="stat"><div class="stat-n" id="shown-count">45</div><div class="stat-l">Showing</div></div>
+  <div class="stat"><div class="stat-n" id="open-count">0</div><div class="stat-l">Reviewed</div></div>
+</div>
+
+<div class="controls">
+  <button class="filter-btn active" data-cat="All" onclick="filter(this)">All</button>
+  <button class="filter-btn" data-cat="VAPT" onclick="filter(this)">VAPT</button>
+  <button class="filter-btn" data-cat="Tools" onclick="filter(this)">Tools</button>
+  <button class="filter-btn" data-cat="Vulnerability" onclick="filter(this)">Vuln Analysis</button>
+  <button class="filter-btn" data-cat="Automation" onclick="filter(this)">Automation</button>
+  <button class="filter-btn" data-cat="Network" onclick="filter(this)">Network</button>
+  <button class="filter-btn" data-cat="OT-Security" onclick="filter(this)">OT Security</button>
+  <button class="filter-btn" data-cat="Behavioral" onclick="filter(this)">Behavioral</button>
+</div>
+
+<div class="questions-grid" id="qgrid"></div>
+<div class="no-results" id="no-results">No questions in this category.</div>
+
+<script>
+const questions = [
+  // VAPT
+  {
+    cat: "VAPT", level: "Core",
+    q: "What is the difference between static and dynamic vulnerability assessment? How do you approach each for a product like ECS?",
+    jd: "Perform static and dynamic Vulnerability Assessment & Penetration Testing",
+    a: `Static analysis examines code/binaries without executing them (SAST), while dynamic testing analyzes running application behavior (DAST).<ul>
+      <li><b>Static:</b> Tools like SonarQube, Checkmarx — used in CI/CD pipelines to catch issues early</li>
+      <li><b>Dynamic:</b> Tools like Burp Suite, OWASP ZAP — test running instances for runtime vulnerabilities</li>
+      <li>For embedded/IoT (ECS) products: static firmware analysis + dynamic fuzzing of interfaces</li>
+    </ul>`
+  },
+  {
+    cat: "VAPT", level: "Core",
+    q: "Walk me through your methodology for a full penetration test on a product. What phases do you follow?",
+    jd: "Participation in Security Testing of ECS product",
+    a: `Standard pentest methodology:<ul>
+      <li><b>1. Reconnaissance:</b> Gather intel, map attack surface</li>
+      <li><b>2. Scanning:</b> Nmap, OpenVAS for open ports/services</li>
+      <li><b>3. Exploitation:</b> Metasploit, manual techniques</li>
+      <li><b>4. Post-exploitation:</b> Privilege escalation, lateral movement</li>
+      <li><b>5. Reporting:</b> CVSS scoring, remediation steps</li>
+    </ul>`
+  },
+  {
+    cat: "VAPT", level: "Advanced",
+    q: "What is the difference between a vulnerability assessment and a penetration test? When would you recommend each?",
+    jd: "Perform static and dynamic Vulnerability Assessment & Penetration Testing",
+    a: `<b>VA</b> is broad, non-exploitative scanning to identify weaknesses (lower risk, good for compliance). <b>Pentest</b> actively exploits vulnerabilities to demonstrate real impact. Use VA for routine checks; pentest before major releases or after significant changes.`
+  },
+  {
+    cat: "VAPT", level: "Core",
+    q: "How do you prepare audit plans and test cases for a security audit? Give an example structure.",
+    jd: "Prepare audit plans, test cases, and test scenarios to perform the security audit",
+    a: `Audit plan structure:<ul>
+      <li>Scope definition (assets, interfaces, threat model)</li>
+      <li>Test scenarios mapped to OWASP / CWE categories</li>
+      <li>Pass/fail criteria per test case</li>
+      <li>Risk priority (Critical → Low)</li>
+      <li>Sign-off and defect tracking integration (Jira, etc.)</li>
+    </ul>`
+  },
+  // Tools
+  {
+    cat: "Tools", level: "Core",
+    q: "Compare Nmap and OpenVAS. When would you use each during a security engagement?",
+    jd: "Experience of Nmap, Wireshark, Burp Suite, OpenVAS and Metasploit",
+    a: `<b>Nmap:</b> Network discovery — port scanning, OS fingerprinting, fast enumeration. Use at recon stage.<br><br><b>OpenVAS:</b> Full vulnerability scanner — checks services against CVE database, produces detailed risk reports. Use after Nmap to deeply assess discovered services.`
+  },
+  {
+    cat: "Tools", level: "Core",
+    q: "How do you use Burp Suite for web application security testing? What are its most useful features?",
+    jd: "Experience of Nmap, Wireshark, Burp Suite, OpenVAS and Metasploit",
+    a: `Key Burp Suite features:<ul>
+      <li><b>Proxy:</b> Intercept and modify HTTP/S requests</li>
+      <li><b>Scanner:</b> Automated vulnerability detection (Pro)</li>
+      <li><b>Intruder:</b> Fuzzing, brute-force, parameter tampering</li>
+      <li><b>Repeater:</b> Manual request manipulation</li>
+      <li><b>Decoder/Comparer:</b> Analyze encoded data</li>
+    </ul>`
+  },
+  {
+    cat: "Tools", level: "Core",
+    q: "Describe a scenario where Wireshark helped you identify a security issue. What were you looking for?",
+    jd: "Experience of Nmap, Wireshark, Burp Suite, OpenVAS and Metasploit",
+    a: `Example: Detecting cleartext credentials — capture traffic on an interface, filter by protocol (HTTP, FTP, Telnet), inspect payloads for sensitive data. Also useful for: detecting ARP spoofing, identifying unusual beacon patterns, SSL/TLS inspection, and protocol anomaly detection.`
+  },
+  {
+    cat: "Tools", level: "Advanced",
+    q: "How do you use Metasploit in a controlled pentest environment? What safeguards do you take?",
+    jd: "Experience of Nmap, Wireshark, Burp Suite, OpenVAS and Metasploit",
+    a: `<b>Usage:</b> Use msfconsole to select exploits, configure payloads (meterpreter), execute against in-scope targets.<br><br><b>Safeguards:</b><ul>
+      <li>Written authorization / rules of engagement document</li>
+      <li>Isolated test environment, not production</li>
+      <li>Log all commands for audit trail</li>
+      <li>Avoid destructive exploits unless explicitly authorized</li>
+    </ul>`
+  },
+  // Vulnerability
+  {
+    cat: "Vulnerability", level: "Core",
+    q: "How do you monitor and triage the CVE database? What's your process for prioritizing vulnerabilities?",
+    jd: "Experience in Security and Vulnerability Analysis, monitoring of CVE database",
+    a: `Process:<ul>
+      <li>Subscribe to NVD feeds, vendor advisories, CERT alerts</li>
+      <li>Map CVEs to our asset inventory</li>
+      <li>Prioritize using CVSS score + exploitability (is there a public PoC?)</li>
+      <li>Consider business context — what assets are internet-facing?</li>
+      <li>Track remediation SLAs in a ticketing system</li>
+    </ul>`
+  },
+  {
+    cat: "Vulnerability", level: "Core",
+    q: "What is CVSS scoring? How do you use it to communicate risk to development teams?",
+    jd: "Collaborate with development team on test results, defects and resolution tracking",
+    a: `CVSS (Common Vulnerability Scoring System) rates severity 0–10 across base, temporal, and environmental metrics. Use it to:<ul>
+      <li>Objectively communicate severity without ambiguity</li>
+      <li>Set SLA expectations (Critical = 24hr, High = 7 days, etc.)</li>
+      <li>Contextualize with environmental score for your specific setup</li>
+    </ul>`
+  },
+  {
+    cat: "Vulnerability", level: "Advanced",
+    q: "You discover a critical vulnerability in a production ECS product component. Walk me through your incident response steps.",
+    jd: "Participate in Security Testing of the ECS product; ad-hoc Security Test execution",
+    a: `Steps:<ul>
+      <li>Document and reproduce in a controlled environment</li>
+      <li>Assess impact — data exposure? remote code execution?</li>
+      <li>Notify security lead and product owner immediately</li>
+      <li>Recommend interim mitigations (WAF rule, network segmentation)</li>
+      <li>Raise defect with full PoC, CVSS score, remediation guidance</li>
+      <li>Verify fix and retest before closure</li>
+    </ul>`
+  },
+  {
+    cat: "Vulnerability", level: "Core",
+    q: "What are the OWASP Top 10? Which ones are most relevant to an ECS/embedded product?",
+    jd: "Identify gaps in Application Security, Network Security",
+    a: `OWASP Top 10 (2021) highlights include: Injection, Broken Access Control, Cryptographic Failures, Insecure Design, and Security Misconfiguration.<br><br>For ECS/embedded: <b>Security Misconfiguration</b> (default creds, open debug ports), <b>Cryptographic Failures</b> (weak TLS, hardcoded keys), and <b>Injection</b> (command injection in device APIs) are most critical.`
+  },
+  // Network
+  {
+    cat: "Network", level: "Core",
+    q: "Explain TCP/IP handshake and how you would detect a SYN flood attack using network tools.",
+    jd: "Good understanding of Network protocols",
+    a: `TCP 3-way handshake: SYN → SYN-ACK → ACK.<br><br>SYN flood detection using:<ul>
+      <li><b>Wireshark:</b> Filter <code>tcp.flags.syn == 1 && tcp.flags.ack == 0</code>, look for volume spikes</li>
+      <li><b>Nmap:</b> Identify half-open connections</li>
+      <li>Check SYN_RECV state count with <code>netstat</code></li>
+    </ul>`
+  },
+  {
+    cat: "Network", level: "Advanced",
+    q: "How would you assess the network security posture of an embedded ECS device? What protocols would you examine?",
+    jd: "Security Audit to identify gaps in Application Security, Network Security",
+    a: `Assessment approach:<ul>
+      <li>Port scan with Nmap — identify unexpected open ports</li>
+      <li>Check for unencrypted protocols: Telnet, HTTP, FTP</li>
+      <li>Test for default credentials on admin interfaces</li>
+      <li>Analyze firmware for hardcoded IPs/keys</li>
+      <li>Assess update mechanism — is it signed? replay-protected?</li>
+      <li>Review mDNS, UPnP, MQTT exposure</li>
+    </ul>`
+  },
+  {
+    cat: "Network", level: "Core",
+    q: "What is the difference between IDS and IPS? In what scenario would you deploy each?",
+    jd: "Identify gaps in Network Security",
+    a: `<b>IDS (Intrusion Detection):</b> Passive — monitors and alerts but doesn't block. Good for logging/visibility without risk of blocking legitimate traffic.<br><br><b>IPS (Intrusion Prevention):</b> Active — blocks malicious traffic inline. Deploy for production environments after tuning to avoid false positives.`
+  },
+  {
+    cat: "Network", level: "Core",
+    q: "Explain the concept of network segmentation and why it's important from a security testing perspective.",
+    jd: "Good understanding of Network protocols; identify gaps in Network Security",
+    a: `Network segmentation divides a network into isolated zones (VLANs, subnets, DMZ) to limit lateral movement after a breach. From a testing perspective: verify that segments are actually isolated (cross-segment access tests), firewall rules are correct, and sensitive devices (ECS controllers) aren't reachable from untrusted zones.`
+  },
+  // Automation
+  {
+    cat: "Automation", level: "Core",
+    q: "How have you implemented test automation in a security testing context? What tools or frameworks did you use?",
+    jd: "Experience in Test Automation",
+    a: `Approaches:<ul>
+      <li><b>DAST automation:</b> OWASP ZAP in CI/CD via Jenkins/GitLab pipelines</li>
+      <li><b>API security:</b> Postman + Newman with security test collections</li>
+      <li><b>Fuzzing:</b> AFL, Boofuzz for binary/protocol fuzzing</li>
+      <li><b>Custom scripts:</b> Python (requests, paramiko) for repeatable checks</li>
+      <li>Integrate results into Jira for defect tracking</li>
+    </ul>`
+  },
+  {
+    cat: "Automation", level: "Advanced",
+    q: "How would you integrate security testing into a CI/CD pipeline for a product like ECS?",
+    jd: "Experience in Test Automation; Involvement in test cycle execution",
+    a: `Pipeline integration steps:<ul>
+      <li><b>Pre-commit:</b> SAST (SonarQube/Semgrep) on code push</li>
+      <li><b>Build stage:</b> Dependency scanning (OWASP Dependency-Check, Snyk)</li>
+      <li><b>Deploy stage:</b> DAST against test environment (ZAP baseline scan)</li>
+      <li><b>Nightly:</b> Full OpenVAS scan, fuzz testing</li>
+      <li>Fail build on Critical/High findings — gate releases</li>
+    </ul>`
+  },
+  {
+    cat: "Automation", level: "Core",
+    q: "What is fuzzing? Give an example of how you'd fuzz-test a network protocol used by an ECS device.",
+    jd: "Experience in Security and Vulnerability Analysis; Experience in Test Automation",
+    a: `Fuzzing sends malformed/unexpected inputs to find crashes and vulnerabilities. For an ECS Modbus TCP interface:<ul>
+      <li>Use Boofuzz to define Modbus protocol structure</li>
+      <li>Mutate fields: function codes, data lengths, illegal values</li>
+      <li>Monitor target for crashes, unexpected responses</li>
+      <li>Any crash = potential DoS or memory corruption vulnerability</li>
+    </ul>`
+  },
+  // Behavioral
+  {
+    cat: "Behavioral", level: "Core",
+    q: "Describe how you collaborate with developers when communicating security defects. How do you handle pushback?",
+    jd: "Collaborate with development team on test results, defects and resolution tracking",
+    a: `Approach:<ul>
+      <li>Provide clear PoC steps, not just a scanner report</li>
+      <li>Explain business risk, not just technical severity</li>
+      <li>Offer remediation guidance, not just criticism</li>
+      <li>For pushback: agree on compensating controls or risk acceptance with sign-off</li>
+      <li>Use CVSS and threat modeling to depoliticize severity debates</li>
+    </ul>`
+  },
+  {
+    cat: "Behavioral", level: "Core",
+    q: "Tell me about a time you conducted an ad-hoc security test. What triggered it and what was the outcome?",
+    jd: "Shall be involved in ad-hoc Security Test execution",
+    a: `Look for: trigger (dev flagged suspicious code, CVE released, customer report), rapid scope definition, tool selection, findings, and a clear outcome. Interviewers want to see initiative, speed, and communication — demonstrate you can operate outside a formal test cycle.`
+  },
+  {
+    cat: "Behavioral", level: "Advanced",
+    q: "You've identified a gap in application security that would require significant development effort to fix. How do you build the business case?",
+    jd: "Security Audit to identify gaps in Application Security",
+    a: `Business case elements:<ul>
+      <li>Quantify risk: what data/systems are exposed? What's the breach cost?</li>
+      <li>Reference regulatory impact (GDPR, IEC 62443 for industrial)</li>
+      <li>Provide fix complexity estimate with dev team input</li>
+      <li>Propose phased approach — quick win mitigations first</li>
+      <li>Escalate through proper channels if risk is critical</li>
+    </ul>`
+  },
+  {
+    cat: "Behavioral", level: "Core",
+    q: "How do you stay current with new vulnerabilities and security research? Name your top resources.",
+    jd: "Security Certifications like CREST, SANS (Desirable)",
+    a: `Resources:<ul>
+      <li><b>NVD / CVE.mitre.org</b> — CVE feeds</li>
+      <li><b>SANS Internet Stormcast</b> — daily threat briefing</li>
+      <li><b>Exploit-DB</b> — PoC exploits</li>
+      <li><b>Twitter/X:</b> Security researchers (@taviso, @lcamtuf)</li>
+      <li><b>Vendor advisories:</b> ICS-CERT for industrial security</li>
+      <li>CTF competitions for hands-on skill building</li>
+    </ul>`
+  },
+  {
+    cat: "Behavioral", level: "Core",
+    q: "What does CREST or SANS certification mean to you, and how has (or would) it shaped your testing approach?",
+    jd: "Security Certifications like CREST, SANS (Desirable)",
+    a: `<b>CREST:</b> Validates professional ethical hacking standards, especially for financial/regulated sectors. Requires demonstrating hands-on pentest skills.<br><br><b>SANS/GIAC:</b> Deep technical training (GPEN, GWAPT, GICSP for ICS). Useful for structured methodology and staying current with threat landscape.`
+  },
+  {
+    cat: "Behavioral", level: "Core",
+    q: "How do you manage multiple security testing tasks under time pressure while maintaining test quality?",
+    jd: "Involvement in test cycle execution — verifying product change; Self-organization (Competency)",
+    a: `Approach:<ul>
+      <li>Risk-based prioritization — high impact areas first</li>
+      <li>Use checklists and test case templates to maintain consistency</li>
+      <li>Communicate scope constraints to stakeholders early</li>
+      <li>Automate repeatable checks to free time for manual deep-dives</li>
+      <li>Document findings continuously — don't wait until the end</li>
+    </ul>`
+  },
+
+  // ── OT SECURITY ──────────────────────────────────────────────────────────
+  {
+    cat: "OT-Security", level: "Core",
+    q: "What is the difference between IT security and OT (Operational Technology) security? Why can't you apply the same controls to both?",
+    jd: "ECS Product Security Testing — industrial/embedded context",
+    a: `<b>IT Security</b> prioritises: Confidentiality → Integrity → Availability (CIA triad).<br><b>OT Security</b> prioritises: Availability → Integrity → Confidentiality (AIC — flipped!).<br><br>Key differences:<ul>
+      <li><b>Uptime is critical:</b> A PLC or SCADA system cannot simply be rebooted for patching — downtime can mean physical harm or production loss worth millions</li>
+      <li><b>Legacy systems:</b> OT environments run Windows XP, proprietary RTUs, 20-year-old firmware that cannot be patched</li>
+      <li><b>Real-time constraints:</b> Security controls (e.g. heavy encryption, IPS inline inspection) can introduce latency that breaks industrial processes</li>
+      <li><b>Physical consequences:</b> A vulnerability in a safety controller doesn't just leak data — it can cause explosions, equipment failure, or injury</li>
+      <li><b>Air-gap myth:</b> Most modern OT networks have IT-OT convergence (remote access, historian databases) — true air gaps are rare</li>
+    </ul>
+    <b>Therefore:</b> Standard IT pentest tools like Metasploit or aggressive scanners should NEVER be run directly against live OT networks without extreme caution.`
+  },
+  {
+    cat: "OT-Security", level: "Core",
+    q: "Explain the Purdue Model (ISA-95) for industrial network architecture. How does it guide OT security segmentation?",
+    jd: "ECS product — industrial control system context; Network Security gaps",
+    a: `The Purdue Model defines hierarchical zones:<ul>
+      <li><b>Level 0 — Field level:</b> Physical sensors, actuators, motors</li>
+      <li><b>Level 1 — Control level:</b> PLCs, RTUs, safety systems (SIS)</li>
+      <li><b>Level 2 — Supervisory level:</b> SCADA/HMI, engineering workstations</li>
+      <li><b>Level 3 — Operations level:</b> Historians, MES (Manufacturing Execution)</li>
+      <li><b>DMZ (Level 3.5):</b> Controlled data exchange between OT and IT</li>
+      <li><b>Level 4–5 — Enterprise IT:</b> ERP, corporate network, internet</li>
+    </ul>
+    <b>Security implications:</b><ul>
+      <li>Traffic should ONLY flow between adjacent levels — never jump from Level 0 to Level 4</li>
+      <li>DMZ acts as a broker: historians push data up, patches come down through controlled channels</li>
+      <li>Unidirectional gateways (data diodes) can enforce one-way flow at critical boundaries</li>
+      <li>During testing: map the actual network against the Purdue model — deviations are findings</li>
+    </ul>`
+  },
+  {
+    cat: "OT-Security", level: "Core",
+    q: "What are PLCs, RTUs, HMIs, and SCADA systems? How do they interrelate in an OT environment?",
+    jd: "ECS product security testing — embedded/industrial components",
+    a: `<b>PLC (Programmable Logic Controller):</b> Hardened microcontroller that executes ladder logic to control physical processes (e.g. open valve when pressure &gt; X). Deployed at Level 1. Vendor examples: Siemens S7, Allen-Bradley, Schneider Modicon.<br><br>
+    <b>RTU (Remote Terminal Unit):</b> Like a PLC but designed for geographically dispersed sites (substations, pipelines). Communicates over radio/serial to SCADA.<br><br>
+    <b>HMI (Human Machine Interface):</b> Touchscreen or PC-based interface at Level 2. Operators view process status and send commands. Often Windows-based — common attack surface.<br><br>
+    <b>SCADA (Supervisory Control and Data Acquisition):</b> Central software platform at Level 2–3 that collects data from RTUs/PLCs, displays on dashboards, and issues supervisory commands. Examples: Wonderware, iFIX, Ignition.<br><br>
+    <b>Attack path:</b> Compromise HMI → pivot to SCADA → issue malicious commands to PLCs → physical impact (e.g., STUXNET attacked Siemens S7 PLCs through this chain).`
+  },
+  {
+    cat: "OT-Security", level: "Advanced",
+    q: "What is the IEC 62443 standard? How does it apply to ECS product security testing?",
+    jd: "ECS product security; security audit and compliance framework",
+    a: `IEC 62443 is the international standard for Industrial Automation and Control System (IACS) cybersecurity. It defines:<br><br>
+    <b>Key components:</b><ul>
+      <li><b>Security Levels (SL 1–4):</b> SL1 = protection from casual/accidental, SL4 = protection from state-sponsored attacks. Most industrial sites target SL2–SL3</li>
+      <li><b>Zones and Conduits:</b> Systems grouped into security zones; communication between zones via conduits with defined controls</li>
+      <li><b>Roles:</b> Asset Owner, System Integrator, Component Manufacturer — each has defined security responsibilities</li>
+    </ul>
+    <b>For ECS product testing:</b><ul>
+      <li>Map product components to IEC 62443-4-2 (component requirements)</li>
+      <li>Test that secure defaults are in place (no default passwords, minimal open ports)</li>
+      <li>Verify patch management capability exists</li>
+      <li>Test logical access controls — role-based access to engineering functions</li>
+      <li>Audit logging must capture operator actions for forensics</li>
+    </ul>`
+  },
+  {
+    cat: "OT-Security", level: "Advanced",
+    q: "Explain Modbus TCP and its security weaknesses. How would you test an ECS device's Modbus interface?",
+    jd: "ECS product security testing; network protocol security",
+    a: `<b>Modbus TCP:</b> Originally a serial protocol from 1979, now over TCP/IP. Used in PLCs, sensors, VFDs. Default port: 502.<br><br>
+    <b>Inherent weaknesses (no security by design):</b><ul>
+      <li>No authentication — any device on the network can send commands</li>
+      <li>No encryption — all data in cleartext (Wireshark can read coil values)</li>
+      <li>No authorisation — any function code can be sent to any device</li>
+      <li>No message integrity — no checksums against tampering (beyond basic CRC)</li>
+    </ul>
+    <b>Security testing approach:</b><ul>
+      <li><b>Nmap scan:</b> Identify open port 502 — <code>nmap -p 502 --script modbus-discover</code></li>
+      <li><b>Modbus-cli / mbtget:</b> Read coil and holding register values without auth</li>
+      <li><b>Write test (authorised only):</b> Attempt to write to coils — can you change output states?</li>
+      <li><b>Wireshark capture:</b> Decode Modbus TCP frames — look for sensitive process values</li>
+      <li><b>Flood test:</b> High-rate Modbus requests causing device DoS</li>
+      <li><b>Function code fuzzing:</b> Send invalid/reserved function codes — observe crash/error handling</li>
+    </ul>
+    <b>Mitigations:</b> Network whitelisting (only authorised Masters), unidirectional gateways, Modbus firewall/proxy.`
+  },
+  {
+    cat: "OT-Security", level: "Advanced",
+    q: "What is DNP3 protocol and what are its known security vulnerabilities?",
+    jd: "Network protocol security; ECS/industrial product testing",
+    a: `<b>DNP3 (Distributed Network Protocol 3):</b> Used in electric utilities, water treatment, oil & gas for SCADA-to-RTU communication. Designed for unreliable serial/radio links. Default TCP port: 20000.<br><br>
+    <b>Security vulnerabilities:</b><ul>
+      <li><b>No authentication (basic DNP3):</b> Any node can send commands. DNP3 Secure Authentication v5 (SA5) adds HMAC-based auth but adoption is slow</li>
+      <li><b>Replay attacks:</b> Without sequence number protection, valid frames can be replayed to re-trigger commands</li>
+      <li><b>Spoofing:</b> Source/destination address fields are easy to forge</li>
+      <li><b>Unsolicited response flood:</b> Attacker sends unsolicited response messages causing master to process false data</li>
+      <li><b>Time sync attack:</b> DNP3 relies on time-of-day messages; malicious time sync can corrupt event timestamps</li>
+    </ul>
+    <b>Testing:</b> Use Aegis (Automatak) DNP3 fuzzer, Wireshark DNP3 dissector for protocol analysis, and verify whether SA5 is implemented.`
+  },
+  {
+    cat: "OT-Security", level: "Core",
+    q: "What is STUXNET and what lessons does it teach about OT/ICS security?",
+    jd: "Security awareness; industrial control system threats",
+    a: `<b>STUXNET (2010):</b> Arguably the world's first cyber weapon — a worm targeting Siemens S7-315/417 PLCs controlling Iranian uranium centrifuges at Natanz.<br><br>
+    <b>Attack chain:</b><ul>
+      <li>Spread via infected USB drives (bypassing air gap)</li>
+      <li>Used 4 zero-day Windows exploits simultaneously</li>
+      <li>Installed a rootkit on Siemens WinCC SCADA software</li>
+      <li>Reprogrammed PLCs to run centrifuges at destructive speeds while reporting normal to operators</li>
+      <li>Destroyed ~1,000 centrifuges over months — completely covert</li>
+    </ul>
+    <b>Lessons for ECS product security:</b><ul>
+      <li>Air gaps are not sufficient — USB/supply chain are vectors</li>
+      <li>PLC firmware integrity checking is critical</li>
+      <li>Operator displays can be spoofed — independent safety monitoring needed</li>
+      <li>Defence-in-depth: multiple layers, not a single perimeter</li>
+      <li>Anomaly detection at the field level (OT-specific IDS like Claroty/Dragos)</li>
+    </ul>`
+  },
+  {
+    cat: "OT-Security", level: "Core",
+    q: "What OT-specific security monitoring tools do you know? How do they differ from IT SIEM tools?",
+    jd: "Security and Vulnerability Analysis; monitoring; ECS product testing",
+    a: `<b>OT Security Monitoring Tools:</b><ul>
+      <li><b>Claroty:</b> Passive network monitoring — discovers assets, detects protocol anomalies, alerts on unauthorised commands</li>
+      <li><b>Dragos:</b> ICS threat intelligence + monitoring platform, includes threat groups (ELECTRUM, SANDWORM) specific to ICS</li>
+      <li><b>Nozomi Networks:</b> Asset discovery + anomaly detection for OT/IoT networks</li>
+      <li><b>Microsoft Defender for IoT (formerly CyberX):</b> Passive OT monitoring integrated with Azure Sentinel</li>
+      <li><b>Tenable.ot (formerly Indegy):</b> Active + passive scanning, PLC integrity checks</li>
+    </ul>
+    <b>Why IT SIEMs (Splunk, QRadar) fall short for OT:</b><ul>
+      <li>Don't understand OT protocols (Modbus, DNP3, EtherNet/IP, PROFINET)</li>
+      <li>Alert baselines built for IT logs — miss OT-specific attacks (rogue engineering commands)</li>
+      <li>Cannot correlate physical process data with cyber events</li>
+      <li>OT devices don't generate Windows event logs</li>
+    </ul>
+    <b>Best practice:</b> Dedicated OT monitoring platform feeding into a unified IT/OT SOC.`
+  },
+  {
+    cat: "OT-Security", level: "Advanced",
+    q: "How would you conduct a security assessment of a SCADA/ICS environment without disrupting operations? What passive techniques would you use?",
+    jd: "ECS product security testing; security audit methodology; operational safety",
+    a: `<b>Golden rule:</b> Active scanning (Nmap aggressive, Metasploit) can crash PLCs — always use passive-first methodology.<br><br>
+    <b>Passive techniques:</b><ul>
+      <li><b>Network tap/SPAN port:</b> Mirror OT network traffic to analysis system — zero risk of disruption</li>
+      <li><b>Protocol analysis (Wireshark):</b> Identify all assets, protocols, connections from traffic alone</li>
+      <li><b>Passive OS fingerprinting:</b> p0f determines OS from packet characteristics without sending probes</li>
+      <li><b>Asset inventory from traffic:</b> Tools like Claroty build asset maps passively</li>
+      <li><b>Configuration review:</b> Pull PLC ladder logic, SCADA configs, HMI screens for offline review</li>
+      <li><b>Vendor documentation review:</b> Check for known CVEs, hardening guides, default credentials</li>
+    </ul>
+    <b>If active testing is approved:</b><ul>
+      <li>Conduct in maintenance window with operators on standby</li>
+      <li>Use OT-safe scan rates (slow, low-frequency) — never default Nmap timing T4/T5</li>
+      <li>Target test devices/lab replicas first, never production PLCs</li>
+      <li>Have rollback/recovery plan agreed before testing</li>
+    </ul>`
+  },
+  {
+    cat: "OT-Security", level: "Advanced",
+    q: "Explain the concept of Defence-in-Depth for OT environments. Give a concrete layered model.",
+    jd: "Security audit; identify gaps in network and application security; ECS product",
+    a: `Defence-in-depth applies multiple independent security layers so no single failure leads to compromise.<br><br>
+    <b>OT Defence-in-Depth layers:</b><ul>
+      <li><b>Physical:</b> Locked control cabinets, badge-access control rooms, CCTV on HMI stations, tamper-evident seals on hardware</li>
+      <li><b>Perimeter:</b> IT/OT firewall with strict whitelist rules, jump server/bastion host for remote access, no direct internet connectivity from OT</li>
+      <li><b>Network:</b> Purdue model zones enforced via VLANs, unidirectional gateways for historian data, OT IDS (Claroty/Nozomi) on SPAN ports</li>
+      <li><b>Endpoint:</b> Application whitelisting (not AV) on HMI/SCADA servers, USB port blocking, OS hardening, integrity checks on PLC firmware</li>
+      <li><b>Application:</b> Role-based access on SCADA, engineer vs operator privilege separation, no shared accounts, signed firmware updates only</li>
+      <li><b>Data:</b> Encrypted historian replication to IT DMZ, encrypted remote access (VPN with MFA), audit logging of all engineering changes</li>
+      <li><b>Monitoring:</b> 24/7 SOC with OT-context alerts, anomaly detection on process values (not just cyber events)</li>
+    </ul>`
+  },
+  {
+    cat: "OT-Security", level: "Core",
+    q: "What is OT threat modelling? Walk through how you'd threat model an ECS product using STRIDE or ATT&CK for ICS.",
+    jd: "ECS product security testing; security audit planning",
+    a: `<b>MITRE ATT&CK for ICS</b> is the preferred framework — it maps adversary TTPs specific to industrial environments across 12 tactics including Initial Access, Execution, Impair Process Control, and Impact.<br><br>
+    <b>Threat modelling process for ECS:</b><ul>
+      <li><b>1. System decomposition:</b> Map all components (PLCs, HMI, historian, engineering workstation, field instruments), data flows, trust boundaries</li>
+      <li><b>2. Identify threat actors:</b> Nation-state (SANDWORM, VOLTZITE), hacktivists, ransomware groups, insider threats, supply chain</li>
+      <li><b>3. Apply STRIDE to each component:</b><br>
+        — <b>S</b>poofing: Can attacker impersonate a legitimate PLC master?<br>
+        — <b>T</b>ampering: Can engineering config be modified in transit?<br>
+        — <b>R</b>epudiation: Are operator actions logged with integrity?<br>
+        — <b>I</b>nformation disclosure: Is Modbus data readable on the network?<br>
+        — <b>D</b>enial of service: Can a packet flood crash the PLC CPU?<br>
+        — <b>E</b>levation of privilege: Can operator account execute engineering-level commands?</li>
+      <li><b>4. Risk rating:</b> Likelihood × Impact, considering physical consequences (not just data)</li>
+      <li><b>5. Mitigations:</b> Map to IEC 62443 controls and product-specific hardening</li>
+    </ul>`
+  },
+  {
+    cat: "OT-Security", level: "Advanced",
+    q: "What is firmware security analysis? How would you analyse the firmware of an ECS device for vulnerabilities?",
+    jd: "ECS product security testing; static analysis; embedded system security",
+    a: `Firmware analysis is the process of reverse engineering and auditing embedded device firmware to find hardcoded credentials, vulnerable libraries, insecure configurations, and logic flaws.<br><br>
+    <b>Step-by-step methodology:</b><ul>
+      <li><b>1. Firmware acquisition:</b> Download from vendor website, extract via JTAG/UART debug port, or pull from update mechanism (MITM the OTA update)</li>
+      <li><b>2. Unpacking:</b> Use <code>binwalk -e firmware.bin</code> to extract filesystem (SquashFS, JFFS2, CRAMFS)</li>
+      <li><b>3. Static analysis:</b><ul>
+        <li>Search for hardcoded credentials: <code>grep -r "password" .</code>, strings analysis</li>
+        <li>Identify crypto usage: hardcoded private keys, weak algorithms (MD5, DES)</li>
+        <li>Check for debug interfaces left enabled (telnetd, SSH on unexpected ports)</li>
+      </ul></li>
+      <li><b>4. Binary analysis:</b> Ghidra or IDA Pro to reverse engineer compiled binaries — look for dangerous functions (strcpy, system(), gets())</li>
+      <li><b>5. Emulation:</b> QEMU + Firmadyne to emulate firmware and run dynamic tests against it</li>
+      <li><b>6. Known vulnerability scan:</b> Extract software components, check against CVE database (SBOM analysis)</li>
+    </ul>
+    <b>Key findings to report:</b> Hardcoded root password, telnet enabled, outdated OpenSSL version, unsigned boot process.`
+  },
+  {
+    cat: "OT-Security", level: "Core",
+    q: "What are the key security differences between EtherNet/IP and standard Ethernet? How do you test EtherNet/IP security?",
+    jd: "Network protocols; ECS product testing; industrial communication protocols",
+    a: `<b>EtherNet/IP</b> (by Rockwell/ODVA) runs the Common Industrial Protocol (CIP) over standard TCP/UDP. It's widely used in Allen-Bradley PLCs and modern industrial Ethernet.<br><br>
+    <b>Security gaps vs standard IT Ethernet:</b><ul>
+      <li>No built-in authentication on CIP — any connected device can send explicit messaging</li>
+      <li>CIP Safety (for safety PLCs) has added integrity checks but many installations don't use it</li>
+      <li>Multicast traffic for I/O — industrial I/O data visible to all devices on segment</li>
+      <li>EtherNet/IP devices often run web servers on port 80 with default/no credentials</li>
+    </ul>
+    <b>Testing approach:</b><ul>
+      <li><b>Nmap:</b> <code>nmap -p 44818 --script enip-info</code> — identify device, vendor, firmware version</li>
+      <li><b>Wireshark with EtherNet/IP dissector:</b> Decode CIP packets, identify I/O assembly data</li>
+      <li><b>EtherScan / Redpoint NSE scripts:</b> Enumerate CIP objects, identity objects, product codes</li>
+      <li><b>Web interface test:</b> Burp Suite against built-in Rockwell web server (default port 80/443)</li>
+      <li>Attempt to read/write CIP tags — unauthorised write = potential process manipulation</li>
+    </ul>`
+  },
+  {
+    cat: "OT-Security", level: "Advanced",
+    q: "How does ransomware impact OT environments differently than IT? Give a real-world example and discuss recovery challenges.",
+    jd: "Security awareness; ECS product security; incident response",
+    a: `<b>OT ransomware impact is fundamentally different:</b><ul>
+      <li>In IT, ransomware encrypts data — painful but recoverable</li>
+      <li>In OT, ransomware encrypting HMI/historian/engineering workstations can halt physical production even if PLCs are unaffected</li>
+      <li>If ransomware spreads to engineering workstations, attackers may also have access to PLC programs — risk of logic tampering</li>
+    </ul>
+    <b>Real example — Colonial Pipeline (2021):</b><ul>
+      <li>Ransomware hit Colonial's IT network, not OT directly</li>
+      <li>However, pipeline operations were shut down for 6 days as a precaution (operators could not safely monitor OT without IT billing/logistics systems)</li>
+      <li>Caused fuel shortages across US East Coast</li>
+      <li>Paid ~$4.4M ransom (partly recovered by FBI)</li>
+    </ul>
+    <b>Recovery challenges in OT:</b><ul>
+      <li>PLCs/RTUs often cannot be restored from standard IT backup tools</li>
+      <li>PLC ladder logic backups may not exist or be outdated</li>
+      <li>Re-commissioning safety systems requires certified engineers — days/weeks</li>
+      <li>SCADA/HMI restoration requires exact version matching of historical drivers</li>
+    </ul>
+    <b>Prevention:</b> Immutable backups of PLC logic, offline engineering workstation backups, OT/IT network segmentation, multi-factor authentication on remote access.`
+  },
+  {
+    cat: "OT-Security", level: "Core",
+    q: "What is the ISA/IEC 62443 Security Level concept and how do you determine the Target Security Level (SL-T) for an ECS product?",
+    jd: "ECS product security; security audit; compliance",
+    a: `<b>Security Levels (SL) in IEC 62443:</b><ul>
+      <li><b>SL 1:</b> Protection against unintentional/casual violation (misconfiguration, accidental access)</li>
+      <li><b>SL 2:</b> Protection against intentional violation using simple means (low-skill attacker, opportunistic)</li>
+      <li><b>SL 3:</b> Protection against intentional violation using sophisticated means (skilled attacker with IACS knowledge, moderate resources)</li>
+      <li><b>SL 4:</b> Protection against state-sponsored, highly sophisticated attacks with extended resources</li>
+    </ul>
+    <b>Determining Target SL (SL-T) process:</b><ul>
+      <li><b>Risk assessment:</b> Identify threat actors likely to target this product/environment</li>
+      <li><b>Consequence analysis:</b> What is the worst-case physical impact? (Personnel safety, environmental, production loss, financial)</li>
+      <li><b>Most critical ECS components</b> typically require SL 2 minimum; safety-critical systems (SIS) target SL 3</li>
+      <li><b>Capability SL (SL-C):</b> What the product actually achieves — test and verify against SL-T</li>
+      <li>Gap between SL-T and SL-C = required security improvements</li>
+    </ul>`
+  },
+  {
+    cat: "OT-Security", level: "Advanced",
+    q: "What is a Safety Instrumented System (SIS) and why is its security critically important? What was the TRITON/TRISIS attack?",
+    jd: "ECS product security; industrial safety; advanced threat awareness",
+    a: `<b>Safety Instrumented System (SIS):</b> An independent safety layer designed to bring a process to a safe state when dangerous conditions are detected (e.g. emergency shutdown of a reactor). Governed by IEC 61511 / IEC 61508. Examples: Schneider Electric Triconex, Emerson DeltaV SIS.<br><br>
+    <b>Why SIS security is critical:</b><ul>
+      <li>SIS is the LAST LINE OF DEFENCE before a physical disaster</li>
+      <li>Compromising it removes all protection — a cyberattack can now cause explosions, toxic releases, or deaths</li>
+      <li>Historically considered "air-gapped" and not in scope — this assumption is dangerously outdated</li>
+    </ul>
+    <b>TRITON/TRISIS Attack (2017, Saudi Arabia petrochemical plant):</b><ul>
+      <li>First known attack explicitly targeting SIS controllers (Schneider Triconex)</li>
+      <li>Attackers deployed custom TRITON malware to reprogram safety controllers</li>
+      <li>Goal: disable SIS so a simultaneous process attack would cause physical destruction</li>
+      <li>Attack failed due to a bug — the SIS triggered fail-safe shutdown, saving the plant</li>
+      <li>Attributed to TEMP.Veles (Russian state-sponsored)</li>
+    </ul>
+    <b>Lessons:</b> SIS must be included in security assessments; air-gap violations must be monitored; SIS firmware integrity checking is essential.`
+  },
+  {
+    cat: "OT-Security", level: "Core",
+    q: "How do you securely manage remote access to OT systems? What are the risks and recommended controls?",
+    jd: "ECS product security; network security; access control",
+    a: `<b>Remote access is the #1 OT attack vector</b> (used in Colonial Pipeline, Oldsmar water plant, and many others).<br><br>
+    <b>Risks of remote access to OT:</b><ul>
+      <li>Vendor VPN credentials stolen/shared — multiple vendors may use same credentials</li>
+      <li>Always-on VPN tunnels bypass network segmentation</li>
+      <li>No session recording — no forensic visibility</li>
+      <li>RDP exposed directly to internet (seen in many OT breaches)</li>
+      <li>Jump server not used — vendor connects directly to engineering workstation</li>
+    </ul>
+    <b>Recommended controls:</b><ul>
+      <li><b>Multi-factor authentication (MFA):</b> Mandatory for all remote access</li>
+      <li><b>Privileged Access Workstation (PAW):</b> Dedicated, hardened machine for OT access</li>
+      <li><b>Jump server/bastion host:</b> All remote sessions proxied through hardened DMZ host</li>
+      <li><b>Session recording:</b> Record all remote sessions (CyberArk, BeyondTrust) for audit and forensics</li>
+      <li><b>Just-in-time access:</b> Enable remote access only when vendor maintenance is scheduled — disable by default</li>
+      <li><b>Least privilege:</b> Vendor can access only their system, not entire OT network</li>
+      <li><b>Time-limited certificates:</b> Rotate remote access credentials per session</li>
+    </ul>`
+  },
+  {
+    cat: "OT-Security", level: "Advanced",
+    q: "Describe the OT vulnerability management lifecycle. Why is patching in OT different from IT, and how do you manage unpatched systems?",
+    jd: "Security and Vulnerability Analysis, monitoring of CVE database; ECS product lifecycle",
+    a: `<b>Why OT patching is fundamentally different from IT:</b><ul>
+      <li><b>Change control is rigid:</b> Patches require change management approval, maintenance windows, operator sign-off — a patch deployed in IT overnight could take months in OT</li>
+      <li><b>Vendor qualification:</b> PLC/SCADA vendors must test and certify patches before release — vendor-certified patch may lag publicly known CVE by 6–18 months</li>
+      <li><b>System availability:</b> A 24/7 continuous process plant may have only one 2-week outage per year for patching</li>
+      <li><b>Legacy systems:</b> Windows XP HMIs no longer receive patches — no mechanism to update</li>
+    </ul>
+    <b>OT Vulnerability Management Lifecycle:</b><ul>
+      <li><b>1. Asset inventory:</b> Know every device, firmware version, OS (passive tools: Nozomi, Claroty)</li>
+      <li><b>2. CVE monitoring:</b> Subscribe to ICS-CERT, vendor advisories, NVD filtered by product family</li>
+      <li><b>3. Risk-based prioritisation:</b> CVSS alone isn't enough — consider exploitability in OT context, network exposure (internet-facing vs air-gapped)</li>
+      <li><b>4. Compensating controls for unpatched systems:</b><br>
+        — Network segmentation (isolate vulnerable devices in sub-VLAN)<br>
+        — Virtual patching (IDS/IPS rule blocks exploit attempts)<br>
+        — Enhanced monitoring (alert on exploit signatures)<br>
+        — Remove unnecessary services/ports<br>
+        — Document and formally accept residual risk</li>
+      <li><b>5. Patch testing:</b> Test in lab replica before production deployment</li>
+      <li><b>6. Rollback plan:</b> Always have system image backup before patching</li>
+    </ul>`
+  },
+  {
+    cat: "OT-Security", level: "Core",
+    q: "What is the MITRE ATT&CK for ICS framework? Give examples of techniques relevant to ECS product attacks.",
+    jd: "ECS product security; threat intelligence; security audit",
+    a: `<b>MITRE ATT&CK for ICS</b> maps adversary tactics and techniques specific to Industrial Control Systems, built from analysis of real ICS attacks (STUXNET, INDUSTROYER, TRITON).<br><br>
+    <b>Key tactics and example techniques:</b><ul>
+      <li><b>Initial Access:</b> Spearphishing (T0865), Exploit Public-Facing Application (T0819), Supply Chain Compromise (T0862), Drive-by Compromise</li>
+      <li><b>Execution:</b> Change Operating Mode (T0858) — switch PLC from Run to Program mode to upload rogue logic</li>
+      <li><b>Persistence:</b> Modify Program (T0889) — alter PLC ladder logic to survive reboots</li>
+      <li><b>Discovery:</b> Remote System Discovery (T0846), I/O Module Discovery — map field devices</li>
+      <li><b>Lateral Movement:</b> Default Credentials (T0812) — use factory passwords to pivot between devices</li>
+      <li><b>Impair Process Control:</b> Unauthorized Command Message (T0855) — send rogue Modbus WRITE commands; Masquerading (T0849) — fake sensor data on HMI</li>
+      <li><b>Impact:</b> Denial of Control (T0813), Loss of Safety (T0837), Damage to Property (T0879)</li>
+    </ul>
+    <b>Use in ECS testing:</b> Map each ATT&CK technique to a test case. Can an attacker execute T0855 (Unauthorized Command) against our Modbus interface? Can they perform T0889 (Modify Program) through the engineering software?`
+  },
+  {
+    cat: "OT-Security", level: "Advanced",
+    q: "How would you build a security test plan specifically for an ECS embedded control product before a new release?",
+    jd: "Prepare audit plans, test cases, test scenarios; ECS product security testing; test cycle execution",
+    a: `<b>ECS Product Security Test Plan — Release Gate Framework:</b><br><br>
+    <b>Phase 1: Pre-Testing (Threat Model & Scope)</b><ul>
+      <li>Update threat model — what changed in this release? New protocols? New interfaces?</li>
+      <li>Map to IEC 62443-4-2 component requirements for target SL</li>
+      <li>Identify test environment: lab replica of production configuration</li>
+      <li>Define pass/fail criteria per security requirement</li>
+    </ul>
+    <b>Phase 2: Static Analysis</b><ul>
+      <li>SAST on firmware source (if available): SonarQube, Coverity for C/C++ embedded code</li>
+      <li>Binary analysis: Binwalk extraction, Ghidra for dangerous functions</li>
+      <li>Dependency scan: Check third-party libraries (OpenSSL, libmodbus) for known CVEs</li>
+      <li>Hardcoded secret search: <code>truffleHog</code>, grep for passwords/keys</li>
+    </ul>
+    <b>Phase 3: Network & Protocol Testing</b><ul>
+      <li>Enumerate all open ports/services — compare against approved baseline</li>
+      <li>Protocol security tests: Modbus, EtherNet/IP, DNP3 — auth, fuzzing, replay</li>
+      <li>TLS/certificate validation on HTTPS interfaces</li>
+      <li>Network segmentation verification — confirm device cannot be reached from untrusted zones</li>
+    </ul>
+    <b>Phase 4: Authentication & Access Control</b><ul>
+      <li>Default credential check — must change on first login</li>
+      <li>Role-based access: operator cannot execute engineering commands</li>
+      <li>Account lockout policy test</li>
+      <li>Session management: timeout, token invalidation on logout</li>
+    </ul>
+    <b>Phase 5: Resilience Testing</b><ul>
+      <li>DoS/stress test: high packet rate on all interfaces — device must remain operational</li>
+      <li>Malformed packet handling: fuzz all protocol parsers</li>
+      <li>Failsafe behaviour: does device go to safe state on communication loss?</li>
+    </ul>
+    <b>Phase 6: Reporting & Release Gate</b><ul>
+      <li>CVSS score all findings, classify Critical/High/Medium/Low</li>
+      <li>No Critical/High findings allowed to ship — release blocked until resolved</li>
+      <li>Medium/Low: accepted with documented compensating controls or scheduled fix</li>
+      <li>Retest all fixes before sign-off</li>
+    </ul>`
+  }
+];
+
+let currentCat = "All";
+let openCount = 0;
+
+function render(cat) {
+  const grid = document.getElementById('qgrid');
+  grid.innerHTML = '';
+  const filtered = cat === 'All' ? questions : questions.filter(q => q.cat === cat);
+  document.getElementById('total-count').textContent = questions.length;
+  document.getElementById('shown-count').textContent = filtered.length;
+  document.getElementById('no-results').style.display = filtered.length ? 'none' : 'block';
+
+  filtered.forEach((item, i) => {
+    const card = document.createElement('div');
+    card.className = 'q-card';
+    card.setAttribute('data-cat', item.cat);
+    card.style.animationDelay = (i * 0.03) + 's';
+    card.innerHTML = `
+      <div class="q-header">
+        <div class="q-num">${String(i+1).padStart(2,'0')}</div>
+        <div class="q-meta">
+          <div class="q-badges">
+            <span class="badge badge-cat ${item.cat}">${item.cat}</span>
+            <span class="badge badge-level">${item.level}</span>
+          </div>
+          <div class="q-text">${item.q}</div>
+        </div>
+        <div class="q-toggle">+</div>
+      </div>
+      <div class="q-answer">
+        <div class="answer-label">▶️ Key Answer Points</div>
+        <div class="answer-text">${item.a}</div>
+        <div class="jd-ref">JD Ref: ${item.jd}</div>
+      </div>
+    `;
+    card.onclick = () => {
+      const wasOpen = card.classList.contains('open');
+      card.classList.toggle('open');
+      if (!wasOpen) openCount++;
+      else openCount = Math.max(0, openCount-1);
+      document.getElementById('open-count').textContent = openCount;
+    };
+    grid.appendChild(card);
+  });
+}
+
+function filter(btn) {
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  currentCat = btn.getAttribute('data-cat');
+  openCount = 0;
+  document.getElementById('open-count').textContent = 0;
+  render(currentCat);
+}
+
+render('All');
+</script>
+
+</body>
+</html>
